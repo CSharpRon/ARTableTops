@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ARTableTops</string>
+    <string name="title_activity_main_game">MainGameActivity</string>
 </resources>
