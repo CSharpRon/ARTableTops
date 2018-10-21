@@ -17,8 +17,8 @@ The current version of the app has the following features which were **not** pre
 - A horizontal scroll bar to navigate between the iamges and the delete function.
 
 ## Resources
-To get started with this project, we relied on the sample code provided by Google which can be found ![here](https://developers.google.com/ar/develop/java/quickstart)   
-Our models also came from the website ![yobi3D.com](https://www.yobi3d.com/) which contains many free models. 
+To get started with this project, we relied on the sample code provided by Google which can be found [here](https://developers.google.com/ar/develop/java/quickstart)   
+Our models also came from the website [yobi3D.com](https://www.yobi3d.com/) which contains many free models. 
 
 ## Takeaway/Future Goals
 We certainly learned much in this project abou the science behind Augmented Reality from a programming perspective. Through the tutorials we
