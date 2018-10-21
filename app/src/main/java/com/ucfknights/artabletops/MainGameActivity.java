@@ -8,8 +8,15 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.InflateException;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
@@ -27,22 +34,52 @@ public class MainGameActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
 
+    private LinearLayout imageList;
+    private HorizontalScrollView mainImgView;
+    private GestureDetector gDetector;
+
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
     // CompletableFuture requires api level 24
     // FutureReturnValueIgnored is not valid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_game);
+
+        imageList = findViewById(R.id.model_images);
+
+        // Set images and add Gesture Detection
+        if(imageList != null) {
+
+            LayoutInflater inflater = LayoutInflater.from(this);
+
+            for (int i = 0; i < 10; i++) {
+
+                try {
+                    View v = inflater.inflate(R.layout.image, imageList, false);
+
+                    ImageView imgView = v.findViewById(R.id.imageView);
+                    imgView.setImageResource(R.drawable.ic_launcher_background);
+
+                    imageList.addView(v);
+                } catch (InflateException e) {
+
+                }
+            }
+
+            mainImgView = findViewById(R.id.main_horizontal_scroll_view);
+            gDetector = new GestureDetector(this, new ImgListGestureDetector(imageList));
+
+            mainImgView.setOnTouchListener(touchListener);
+        }
+
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
 
-        setContentView(R.layout.activity_main_game);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
-        // When you build a Renderable, Sceneform loads its resources in the background while returning
-        // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
         ModelRenderable.builder()
                 .setSource(this, R.raw.rover3)
                 .build()
@@ -75,6 +112,13 @@ public class MainGameActivity extends AppCompatActivity {
                 });
     }
 
+    // Passes everything on to the gesture detector.
+    View.OnTouchListener touchListener = (v, event) -> {
+
+        return gDetector.onTouchEvent(event);
+
+    };
+
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
      * on this device.
@@ -104,4 +148,35 @@ public class MainGameActivity extends AppCompatActivity {
         return true;
     }
 
+    class ImgListGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        private LinearLayout imgList;
+
+        ImgListGestureDetector(LinearLayout list) {
+            imgList = list;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+
+            // Upward Scroll
+            if (distanceY > 0 && distanceY > 20) {
+                if (imgList.getVisibility() != View.VISIBLE) {
+                    imgList.setVisibility(View.VISIBLE);
+                }
+            } else if (distanceY < 0 && distanceY < -20) {
+                if (imgList.getVisibility() != View.INVISIBLE) {
+                    imgList.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            return true;
+        }
+    }
 }
