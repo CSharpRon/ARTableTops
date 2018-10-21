@@ -10,11 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.HitTestResult;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
@@ -25,7 +30,14 @@ public class MainGameActivity extends AppCompatActivity {
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     private ArFragment arFragment;
-    private ModelRenderable andyRenderable;
+    private ModelRenderable curRen;
+    private ModelRenderable roverRenderable;
+    private ModelRenderable carRenderable;
+    private ModelRenderable buzzRenderable;
+    private Anchor last;
+    private Anchor cur;
+    private boolean resize = true;
+
 
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -46,7 +58,7 @@ public class MainGameActivity extends AppCompatActivity {
         ModelRenderable.builder()
                 .setSource(this, R.raw.rover3)
                 .build()
-                .thenAccept(renderable -> andyRenderable = renderable)
+                .thenAccept(renderable -> roverRenderable = renderable)
                 .exceptionally(
                         throwable -> {
                             Toast toast =
@@ -55,10 +67,33 @@ public class MainGameActivity extends AppCompatActivity {
                             toast.show();
                             return null;
                         });
-
+        ModelRenderable.builder()
+                .setSource(this, R.raw.car)
+                .build()
+                .thenAccept(renderable -> carRenderable = renderable)
+                .exceptionally(
+                        throwable -> {
+                            Toast toast =
+                                    Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            return null;
+                        });
+        ModelRenderable.builder()
+                .setSource(this, R.raw.buzz)
+                .build()
+                .thenAccept(renderable -> buzzRenderable = renderable)
+                .exceptionally(
+                        throwable -> {
+                            Toast toast =
+                                    Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            return null;
+                        });
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-                    if (andyRenderable == null) {
+                    if (curRen == null) {
                         return;
                     }
 
@@ -70,9 +105,63 @@ public class MainGameActivity extends AppCompatActivity {
                     // Create the transformable andy and add it to the anchor.
                     TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
                     andy.setParent(anchorNode);
-                    andy.setRenderable(andyRenderable);
+                    andy.getScaleController().setMinScale(0.1f);
+                    andy.getScaleController().setMaxScale(2.0f);
+
+                    andy.setLocalScale(new Vector3(0.1f, 0.1f, 0.1f));
+                    andy.setRenderable(curRen);
                     andy.select();
+                    cur=anchor;
+
+                    andy.setOnTapListener(new Node.OnTapListener() {
+                        @Override
+                        public void onTap(HitTestResult hitTestResult, MotionEvent motionEvent) {
+                            last = ((AnchorNode) hitTestResult.getNode().getParent()).getAnchor();
+                            //findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+                        }
+                    });
                 });
+
+        final Button button = findViewById(R.id.delete_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (last != null){
+                    last.detach();
+                    last=null;
+
+                }
+                else if(cur != null){
+                    cur.detach();
+                    cur=null;
+                }
+            }
+        });
+       final Button rover_bttn = findViewById(R.id.rover_bttn);
+        rover_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                curRen=roverRenderable;
+                resize=true;
+            }
+        });
+        final Button car_bttn = findViewById(R.id.car_bttn);
+        car_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                curRen=carRenderable;
+                resize=true;
+            }
+        });
+        final Button buzz_bttn = findViewById(R.id.buzz_bttn);
+        buzz_bttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                curRen=buzzRenderable;
+                resize=false;
+            }
+        });
+
     }
 
     /**

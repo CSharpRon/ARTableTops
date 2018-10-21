@@ -48,3 +48,13 @@ sceneform.asset('sampledata/models/CuriosityRover/rover3.obj',
         'default',
         'sampledata/models/CuriosityRover/rover3.sfa',
         'src/main/res/raw/rover3')
+
+sceneform.asset('sampledata/models/car/model.obj',
+        'default',
+        'sampledata/models/car/car.sfa',
+        'src/main/res/raw/car')
+
+sceneform.asset('sampledata/models/buzz/buzz.obj',
+        'default',
+        'sampledata/models/buzz/buzz.sfa',
+        'src/main/res/raw/buzz')
