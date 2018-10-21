@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="models">
+        <item>buzz_lightyear</item>
+        <item>car</item>
+        <item>discovery_rover</item>
+        <item>delete</item>
+    </string-array>
+</resources>
