@@ -14,6 +14,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,9 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.HitTestResult;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
@@ -156,45 +160,29 @@ public class MainGameActivity extends AppCompatActivity {
                     });
                 });
 
-        final Button button = findViewById(R.id.delete_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (last != null){
-                    last.detach();
-                    last=null;
-
-                }
-                else if(cur != null){
-                    cur.detach();
-                    cur=null;
-                }
-            }
-        });
-        final Button rover_bttn = findViewById(R.id.rover_bttn);
-        rover_bttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                curRen=roverRenderable;
-                resize=true;
-            }
-        });
-        final Button car_bttn = findViewById(R.id.car_bttn);
-        car_bttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                curRen=carRenderable;
-                resize=true;
-            }
-        });
-        final Button buzz_bttn = findViewById(R.id.buzz_bttn);
-        buzz_bttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                curRen=buzzRenderable;
-                resize=false;
-            }
-        });
+//        final Button button = findViewById(R.id.delete_button);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (last != null){
+//                    last.detach();
+//                    last=null;
+//
+//                }
+//                else if(cur != null){
+//                    cur.detach();
+//                    cur=null;
+//                }
+//            }
+//        });
+//        final Button rover_bttn = findViewById(R.id.rover_bttn);
+//        rover_bttn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                curRen=roverRenderable;
+//                resize=true;
+//            }
+//        });
     }
 
     // Passes everything on to the gesture detector.
